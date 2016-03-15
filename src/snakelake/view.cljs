@@ -5,13 +5,20 @@
     [snakelake.model :as model]
     [snakelake.communication :as communication]))
 
-(defn keydown [e]
+(defn dir [e dx dy]
   (.preventDefault e)
+  (communication/dir dx dy))
+
+(defn keydown [e]
   (condp = (.-keyCode e)
-    KeyCodes/LEFT (communication/dir -1 0)
-    KeyCodes/RIGHT (communication/dir 1 0)
-    KeyCodes/UP (communication/dir 0 -1)
-    KeyCodes/DOWN (communication/dir 0 1)
+    KeyCodes/LEFT (dir e -1 0)
+    KeyCodes/A (dir e -1 0)
+    KeyCodes/RIGHT (dir e 1 0)
+    KeyCodes/D (dir e 1 0)
+    KeyCodes/UP (dir e 0 -1)
+    KeyCodes/W (dir e 0 -1)
+    KeyCodes/DOWN (dir e 0 1)
+    KeyCodes/S (dir e 0 1)
     nil))
 
 (defonce listener
@@ -83,9 +90,11 @@
    [:h1 "Snakelake" (when (not (string? (:uid @model/app-state)))
                       " - Server is full!")]
    [:center
-    [board @model/app-state]]
-   [:h1 [:button
-         {:on-click
-          (fn [e]
-            (communication/reconnect))}
-         "Respawn"]]])
+    [board @model/app-state]
+    [:p "Steer with the arrow keys, or WASD"]]
+   [:h1
+    [:button
+     {:on-click
+      (fn [e]
+        (communication/reconnect))}
+     "Respawn"]]])
