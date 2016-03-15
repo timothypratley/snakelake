@@ -5,20 +5,20 @@
     [snakelake.model :as model]
     [snakelake.communication :as communication]))
 
-(defn dir [e dx dy]
+(defn dir [e [dx dy]]
   (.preventDefault e)
   (communication/dir dx dy))
 
 (defn keydown [e]
   (condp = (.-keyCode e)
-    KeyCodes/LEFT (dir e -1 0)
-    KeyCodes/A (dir e -1 0)
-    KeyCodes/RIGHT (dir e 1 0)
-    KeyCodes/D (dir e 1 0)
-    KeyCodes/UP (dir e 0 -1)
-    KeyCodes/W (dir e 0 -1)
-    KeyCodes/DOWN (dir e 0 1)
-    KeyCodes/S (dir e 0 1)
+    KeyCodes/LEFT (dir e [-1 0])
+    KeyCodes/A (dir e [-1 0])
+    KeyCodes/RIGHT (dir e [1 0])
+    KeyCodes/D (dir e [1 0])
+    KeyCodes/UP (dir e [0 -1])
+    KeyCodes/W (dir e [0 -1])
+    KeyCodes/DOWN (dir e [0 1])
+    KeyCodes/S (dir e [0 1])
     nil))
 
 (defonce listener
@@ -58,11 +58,33 @@
     :stroke-width 0.05
     :fill "red"}])
 
+(defn click [e]
+  (let [elem (.-target e)
+         r (.getBoundingClientRect elem)
+         left (.-left r)
+         top (.-top r)
+         width (.-width r)
+         height (.-height r)
+         ex (.-clientX e)
+         ey (.-clientY e)
+         x (- ex left (/ width 2))
+         y (- ey top (/ height 2))]
+    (dir e
+         (if (> (js/Math.abs y) (js/Math.abs x))
+           (if (pos? y)
+             [0 1]
+             [0 -1])
+           (if (pos? x)
+             [1 0]
+             [-1 0])))))
+
 (defn board [{{:keys [board players]} :world my-uid :uid}]
   (let [width (count (first board))
         height (count board)]
     [:svg.board
-     {:style {:border "1px solid black"
+     {:on-click click
+      :style {:cursor "pointer"
+              :border "1px solid black"
               :width "90%"}
       :view-box [0 0 (inc width) (inc height)]}
      (doall
