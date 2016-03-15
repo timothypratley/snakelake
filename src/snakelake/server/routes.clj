@@ -9,22 +9,21 @@
     [taoensso.sente.server-adapters.http-kit :as http-kit]
     [compojure.core :refer [defroutes GET POST]]))
 
-(defonce channel-socket
-  (sente/make-channel-socket!
-    http-kit/sente-web-server-adapter
-    {:user-id-fn #'model/next-uid}))
-(defonce ring-ajax-post (:ajax-post-fn channel-socket))
-(defonce ring-ajax-get-or-ws-handshake (:ajax-get-or-ws-handshake-fn channel-socket))
-(defonce chsk-send! (:send-fn channel-socket))
-(defonce connected-uids (:connected-uids channel-socket))
+(declare channel-socket)
+
+(defn start-websocket []
+  (defonce channel-socket
+    (sente/make-channel-socket!
+      http-kit/sente-web-server-adapter
+      {:user-id-fn #'model/next-uid})))
 
 (defroutes routes
   (GET "/" req (response/content-type
                  (response/resource-response "public/index.html")
                  "text/html"))
-  (GET "/status" req (str "Running: " (pr-str @connected-uids)))
-  (GET  "/chsk" req (ring-ajax-get-or-ws-handshake req))
-  (POST "/chsk" req (ring-ajax-post req)))
+  (GET "/status" req (str "Running: " (pr-str @(:connected-uids channel-socket))))
+  (GET  "/chsk" req ((:ajax-get-or-ws-handshake-fn channel-socket) req))
+  (POST "/chsk" req ((:ajax-post-fn channel-socket) req)))
 
 (def handler
   (-> #'routes
@@ -50,12 +49,13 @@
 
 (defmethod event :chsk/ws-ping [_])
 
-(defonce router
-  (sente/start-chsk-router! (:ch-recv channel-socket) event))
+(defn start-router []
+  (defonce router
+    (sente/start-chsk-router! (:ch-recv channel-socket) event)))
 
 (defn broadcast []
-  (doseq [uid (:any @connected-uids)]
-    (chsk-send! uid [:snakelake/world @model/world])))
+  (doseq [uid (:any @(:connected-uids channel-socket))]
+    ((:send-fn channel-socket) uid [:snakelake/world @model/world])))
 
 (defn ticker []
   (while true
@@ -66,6 +66,7 @@
       (catch Exception ex
         (println ex)))))
 
-(defonce ticker-thread
-  (doto (Thread. ticker)
-    (.start)))
+(defn start-ticker []
+  (defonce ticker-thread
+    (doto (Thread. ticker)
+      (.start))))

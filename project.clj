@@ -26,30 +26,31 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :main ^:skip-aot snakelake.server.main
-
-  :profiles {:dev {:env {:dev? "true"}}
-             :uberjar {:env {:production "true"}}}
+  :main snakelake.server.main
 
   :uberjar-name "snakelake-standalone.jar"
 
-  :cljsbuild {:builds
-              [{:id "dev"
-                :source-paths ["src"]
-                :figwheel {}
-                :compiler {:main snakelake.main
-                           :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/snakelake.js"
-                           :output-dir "resources/public/js/compiled/out"
-                           :source-map-timestamp true}}
-               ;; This next build is an compressed minified build for
-               ;; production. You can build this with:
-               ;; lein cljsbuild once min
-               {:id "min"
-                :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/snakelake.js"
-                           :main snakelake.main
-                           :optimizations :advanced
-                           :pretty-print false}}]}
+  :profiles
+  {:dev {:env {:dev? "true"}
+         :cljsbuild {:builds
+                     [{:id "dev"
+                       :source-paths ["src"]
+                       :figwheel {}
+                       :compiler {:main snakelake.main
+                                  :asset-path "js/compiled/out"
+                                  :output-to "resources/public/js/compiled/snakelake.js"
+                                  :output-dir "resources/public/js/compiled/out"
+                                  :source-map-timestamp true}}]}}
+   :uberjar {:hooks [leiningen.cljsbuild]
+             :aot :all
+             :cljsbuild {:builds
+                         [{:id "min"
+                           :source-paths ["src"]
+                           :compiler {:main snakelake.main
+                                      :output-to "resources/public/js/compiled/snakelake.js"
+                                      :optimizations :advanced
+                                      :pretty-print false}}]}}}
+
+
 
   :figwheel {:css-dirs ["resources/public/css"] })
