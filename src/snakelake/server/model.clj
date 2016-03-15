@@ -2,8 +2,11 @@
   (:require
     [clojure.set :as set]))
 
+(def width 80)
+(def height 80)
+
 (defn new-board []
-  (vec (repeat 20 (vec (repeat 20 nil)))))
+  (vec (repeat width (vec (repeat height nil)))))
 
 (defonce world
   (ref {:board (new-board)
@@ -78,7 +81,7 @@
   (if (= health :alive)
     (let [nx (+ x dx)
           ny (+ y dy)]
-      (if (or (not (and (<= 0 nx 19) (<= 0 ny 19)))
+      (if (or (not (and (<= 0 nx (dec width)) (<= 0 ny (dec height))))
               (get-in world [:board ny nx]))
         (assoc-in world [:players uid 0] :dead)
         (-> world

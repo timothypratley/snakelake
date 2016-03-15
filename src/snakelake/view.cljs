@@ -38,29 +38,31 @@
     :fill "red"}])
 
 (defn board [{{:keys [board players]} :world my-uid :uid}]
-  [:svg.board
-   {:width 400
-    :height 400
-    :view-box [0 0 21 21]}
-   (doall
-     (for [i (range 20)
-           j (range 20)
-           :let [uid (get-in board [j i])]
-           :when uid]
-       ^{:key [i j]}
-       [segment uid i j (= my-uid uid)]))
-   (doall
-     (for [[uid [health x y dx dy]] players
-           :when (= health :alive)]
-       ^{:key uid}
-       [:g
-        {:transform (str "translate(" (inc x) " " (inc y) ")")}
-        [eye
-         (+ (/ dx 2) (/ dy 2))
-         (+ (/ dy 2) (/ dx 2))]
-        [eye
-         (- (/ dx 2) (/ dy 2))
-         (- (/ dy 2) (/ dx 2))]]))])
+  (let [width (count (first board))
+        height (count board)]
+    [:svg.board
+     {:style {:border "1px solid black"
+              :width "90%"}
+      :view-box [0 0 (inc width) (inc height)]}
+     (doall
+       (for [i (range width)
+             j (range height)
+             :let [uid (get-in board [j i])]
+             :when uid]
+         ^{:key [i j]}
+         [segment uid i j (= my-uid uid)]))
+     (doall
+       (for [[uid [health x y dx dy]] players
+             :when (= health :alive)]
+         ^{:key uid}
+         [:g
+          {:transform (str "translate(" (inc x) " " (inc y) ")")}
+          [eye
+           (+ (/ dx 2) (/ dy 2))
+           (+ (/ dy 2) (/ dx 2))]
+          [eye
+           (- (/ dx 2) (/ dy 2))
+           (- (/ dy 2) (/ dx 2))]]))]))
 
 (defn main []
   [:div.content
