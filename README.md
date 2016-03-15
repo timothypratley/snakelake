@@ -2,6 +2,8 @@
 
 Multiplayer snake!
 
+http://snakelake.herokuapp.com
+
 ## Overview
 
 Avoid colliding with other snakes
