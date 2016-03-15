@@ -7,7 +7,8 @@
     [environ.core :as environ]
     [taoensso.sente :as sente]
     [taoensso.sente.server-adapters.http-kit :as http-kit]
-    [compojure.core :refer [defroutes GET POST]]))
+    [compojure.core :refer [defroutes GET POST]]
+    [compojure.route :as route]))
 
 (declare channel-socket)
 
@@ -23,7 +24,9 @@
                  "text/html"))
   (GET "/status" req (str "Running: " (pr-str @(:connected-uids channel-socket))))
   (GET  "/chsk" req ((:ajax-get-or-ws-handshake-fn channel-socket) req))
-  (POST "/chsk" req ((:ajax-post-fn channel-socket) req)))
+  (POST "/chsk" req ((:ajax-post-fn channel-socket) req))
+  (route/resources "/")
+  (route/not-found "Nnt found"))
 
 (def handler
   (-> #'routes
