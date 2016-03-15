@@ -84,9 +84,10 @@
     [:svg.board
      {:on-click click
       :style {:cursor "pointer"
-              :border "1px solid black"
-              :width "90%"}
-      :view-box [0 0 (inc width) (inc height)]}
+              :width "80%"
+              :border "1px solid black"}
+      :view-box [0 0 (inc width) (inc height)]
+      :preserve-aspect-ratio "xMidYMid meet"}
      (doall
        (for [i (range width)
              j (range height)
