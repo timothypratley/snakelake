@@ -33,3 +33,6 @@
 
 (defonce router
   (sente/start-client-chsk-router! ch-chsk event-msg-handler))
+
+(defn reconnect []
+  (sente/chsk-reconnect! chsk))

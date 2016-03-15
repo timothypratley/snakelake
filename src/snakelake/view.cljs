@@ -37,6 +37,11 @@
     :stroke-width 0.2
     :stroke "green"}])
 
+(defn pixel [uid i j my-uid]
+  (if (= uid "food")
+    [food i j]
+    [segment uid i j (= my-uid uid)]))
+
 (defn eye [dx dy]
   [:circle
    {:cx (/ dx 2)
@@ -59,9 +64,7 @@
              :let [uid (get-in board [j i])]
              :when uid]
          ^{:key [i j]}
-         (if (= uid "food")
-           [food i j]
-           [segment uid i j (= my-uid uid)])))
+         [pixel uid i j my-uid]))
      (doall
        (for [[uid [health x y dx dy]] players
              :when (= health :alive)]
@@ -77,6 +80,12 @@
 
 (defn main []
   [:div.content
-   [:h1 "Snakelake"]
+   [:h1 "Snakelake" (when (not (string? (:uid @model/app-state)))
+                      " - Server is full!")]
    [:center
-    [board @model/app-state]]])
+    [board @model/app-state]]
+   [:h1 [:button
+         {:on-click
+          (fn [e]
+            (communication/reconnect))}
+         "Respawn"]]])

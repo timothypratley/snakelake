@@ -30,25 +30,24 @@
   (let [available (set/difference colors2 (set (keys (:players @world))))]
     (some-> (seq available) (rand-nth))))
 
-(defn clear? [x y]
-  (every? nil?
+(defn clear? [board x y]
+  (every? #(or (nil? %) (= "food" %))
           (for [i (range -2 3)
                 j (range -2 3)]
-            (get-in @world [:board (+ y j) (+ x i)]))))
+            (get-in board [(+ y j) (+ x i)]))))
 
 (defn find-start
-  ([] (find-start 0))
-  ([depth]
-   (let [x (+ 5 (rand-int 10))
-         y (+ 5 (rand-int 10))
-         dx (rand-nth [1 -1 0 0])
-         dy (if (zero? dx)
-              (rand-nth [1 -1])
-              0)]
-     (cond
-       (clear? x y) [x y dx dy]
-       (> depth 1000) nil
-       :else (recur (inc depth))))))
+  [world]
+  (when-let [available (seq (for [i (range 5 (- width 5))
+                                  j (range 5 (- height 5))
+                                  :when (clear? (:board world) i j)]
+                              [i j]))]
+    (let [[x y] (rand-nth available)
+          dx (rand-nth [1 -1 0 0])
+          dy (if (zero? dx)
+               (rand-nth [1 -1])
+               0)]
+      [x y dx dy])))
 
 (defn with-new-food [world]
   (if (< (count (for [i (range width)
@@ -66,7 +65,7 @@
 
 (defn new-player [world uid]
   (let [health :alive
-        [x y dx dy] (find-start)
+        [x y dx dy] (find-start world)
         length 3
         path [[x y]]]
     (if x
