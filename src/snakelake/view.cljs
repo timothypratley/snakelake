@@ -112,8 +112,16 @@
   [:div.content
    [:h1 "Snakelake" (when (not (string? (:uid @model/app-state)))
                       " - Server is full!")]
+
    [:center
-    [board @model/app-state]
+    [:audio
+     {:controls "true"
+      :loop "true"}
+     [:source {:src "http://serve01.mp3skull.onl/get?id=FjNdYp2gXRY"}]
+     "Your browser does not support the audio element."]
+    [:div "Ahrix - Nova [NCS Release]"]]
+   [:center
+        [board @model/app-state]
     [:p "Steer with the arrow keys, WASD, or click/touch the side of the board."]]
    [:h1
     [:button
