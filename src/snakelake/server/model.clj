@@ -4,6 +4,7 @@
 
 (def width 80)
 (def height 80)
+(def max-food 5)
 
 (defn new-board []
   (vec (repeat width (vec (repeat height nil)))))
@@ -49,6 +50,20 @@
        (> depth 1000) nil
        :else (recur (inc depth))))))
 
+(defn with-new-food [world]
+  (if (< (count (for [i (range width)
+                      j (range height)
+                      :when (= (get-in world [:board j i]) "food")]
+                  1))
+         max-food)
+    (if-let [available (seq (for [i (range width)
+                                  j (range height)
+                                  :when (not (get-in world [:board j i]))]
+                              [j i]))]
+      (assoc-in world (cons :board (rand-nth available)) "food")
+      world)
+    world))
+
 (defn new-player [world uid]
   (let [health :alive
         [x y dx dy] (find-start)
@@ -57,7 +72,8 @@
     (if x
       (-> world
         (assoc-in [:players uid] [health x y dx dy length path])
-        (assoc-in [:board y x] uid))
+        (assoc-in [:board y x] uid)
+        (with-new-food))
       (do
         (println "No space for new player")
         world))))
@@ -82,13 +98,17 @@
     (let [nx (+ x dx)
           ny (+ y dy)]
       (if (or (not (and (<= 0 nx (dec width)) (<= 0 ny (dec height))))
-              (get-in world [:board ny nx]))
+              (when-let [owner (get-in world [:board ny nx])]
+                (not= owner "food")))
         (assoc-in world [:players uid 0] :dead)
-        (-> world
-          (assoc-in [:board ny nx] uid)
-          (assoc-in [:players uid 1] nx)
-          (assoc-in [:players uid 2] ny)
-          (update-in [:players uid 6] #(cons [nx ny] %)))))
+        (let [ate? (= (get-in world [:board ny nx]) "food")]
+          (-> world
+            (assoc-in [:board ny nx] uid)
+            (assoc-in [:players uid 1] nx)
+            (assoc-in [:players uid 2] ny)
+            (update-in [:players uid 5] #(cond-> % ate? (+ 3)))
+            (update-in [:players uid 6] #(cons [nx ny] %))
+            (cond-> ate? with-new-food)))))
     world))
 
 (defn moves [world]
@@ -127,5 +147,15 @@
 (defn dir [uid dx dy]
   (dosync (alter world with-dir uid dx dy)))
 
+(defn board-without-player [board uid]
+  (mapv (fn [v]
+          (mapv #(when (not= uid %) %) v))
+        board))
+
+(defn without-player [world uid]
+  (-> world
+    (update :players dissoc uid)
+    (update :board board-without-player uid)))
+
 (defn remove-player [uid]
-  (dosync (alter world update :players dissoc uid)))
+  (dosync (alter world without-player uid)))

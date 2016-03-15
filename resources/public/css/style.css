@@ -1,7 +1,14 @@
-.content {
-  background-color: lightgrey;
+body {
+  background-color: #7CAFC2;
 }
 
 .board {
   background-color: white;
+}
+
+h1 {
+  color: #F8F8F8;
+  background-color: #A1B56C;
+  text-align: center;
+  font-family: courier;
 }

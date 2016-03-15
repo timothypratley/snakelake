@@ -22,17 +22,26 @@
    {:x (+ i 0.55)
     :y (+ j 0.55)
     :fill (subs uid 0 7)
-    :stroke-width 0.2
+    :stroke-width 0.3
     :stroke (subs uid 7 14)
     :rx (if me? 0.4 0.2)
     :width 0.9
     :height 0.9}])
 
+(defn food [i j]
+  [:circle
+   {:cx (inc i)
+    :cy (inc j)
+    :r 0.45
+    :fill "lightgreen"
+    :stroke-width 0.2
+    :stroke "green"}])
+
 (defn eye [dx dy]
   [:circle
    {:cx (/ dx 2)
     :cy (/ dy 2)
-    :r 0.15
+    :r 0.2
     :stroke "black"
     :stroke-width 0.05
     :fill "red"}])
@@ -50,7 +59,9 @@
              :let [uid (get-in board [j i])]
              :when uid]
          ^{:key [i j]}
-         [segment uid i j (= my-uid uid)]))
+         (if (= uid "food")
+           [food i j]
+           [segment uid i j (= my-uid uid)])))
      (doall
        (for [[uid [health x y dx dy]] players
              :when (= health :alive)]
