@@ -113,7 +113,7 @@
                       " - Server is full!")]
    [:center
     [board @model/app-state]
-    [:p "Steer with the arrow keys, or WASD"]]
+    [:p "Steer with the arrow keys, WASD, or click/touch the side of the board."]]
    [:h1
     [:button
      {:on-click
