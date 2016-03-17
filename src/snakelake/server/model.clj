@@ -113,22 +113,6 @@
 (defn moves [world]
   (reduce move world (:players world)))
 
-(defn apply-dir [world [uid [dx dy]]]
-  (if (get-in world [:players uid])
-    (-> world
-      (assoc-in [:players uid 3] dx)
-      (assoc-in [:players uid 4] dy))
-    world))
-
-(defn dirs [world]
-  (reduce apply-dir world (:dirs world)))
-
-(defn step [world]
-  (moves (trim-tails (dirs world))))
-
-(defn tick []
-  (dosync (alter world step)))
-
 (def valid? #{1 -1 0})
 
 (defn with-dir [world uid dx dy]
@@ -139,9 +123,32 @@
           (and (valid? dx) (valid? dy))
           (and (not= dx (- cdx)))
           (and (not= dy (- cdy))))
-      (assoc-in world [:dirs uid] [dx dy])
-      world)
+      (-> world
+        (assoc-in [:dirs uid] [dx dy])
+        (update-in [:next-dirs] dissoc uid))
+      (if (get-in world [:dirs uid])
+        (assoc-in world [:next-dirs uid] [dx dy])
+        world))
     world))
+
+(defn apply-dir [world [uid [dx dy]]]
+  (if (get-in world [:players uid])
+    (let [[nx ny] (get-in world [:next-dirs uid])]
+      (-> world
+        (assoc-in [:players uid 3] dx)
+        (assoc-in [:players uid 4] dy)
+        (update :dirs dissoc uid)
+        (cond-> nx (with-dir uid nx ny))))
+    world))
+
+(defn dirs [world]
+  (reduce apply-dir world (:dirs world)))
+
+(defn step [world]
+  (moves (trim-tails (dirs world))))
+
+(defn tick []
+  (dosync (alter world step)))
 
 (defn dir [uid dx dy]
   (dosync (alter world with-dir uid dx dy)))
@@ -154,6 +161,8 @@
 (defn without-player [world uid]
   (-> world
     (update :players dissoc uid)
+    (update :dirs dissoc uid)
+    (update :next-dirs dissoc uid)
     (update :board board-without-player uid)))
 
 (defn remove-player [uid]
