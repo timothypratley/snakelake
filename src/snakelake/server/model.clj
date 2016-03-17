@@ -2,8 +2,8 @@
   (:require
     [clojure.set :as set]))
 
-(def width 80)
-(def height 80)
+(def width 50)
+(def height 50)
 (def max-food 5)
 
 (defn new-board []
