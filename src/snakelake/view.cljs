@@ -83,11 +83,12 @@
         height (count board)]
     [:svg.board
      {:on-click click
-      :style {:cursor "pointer"
-              :width "80%"
-              :border "1px solid black"}
       :view-box [0 0 (inc width) (inc height)]
       :preserve-aspect-ratio "xMidYMid meet"}
+     [:rect
+      {:width (inc width)
+       :height (inc height)
+       :fill "white"}]
      (doall
        (for [i (range width)
              j (range height)
@@ -110,7 +111,7 @@
 
 (defn main []
   [:div.content
-   [:h1 "Snakelake" (when (not (string? (:uid @model/app-state)))
+   [:h1 "Snake Lake" (when (not (string? (:uid @model/app-state)))
                       " - Server is full!")]
    [:center
     [:audio
@@ -121,8 +122,8 @@
      "Your browser does not support the audio element."]
     [:div "Ahrix - Nova [NCS Release]"]]
    [:center
-        [board @model/app-state]
-    [:p "Steer with the arrow keys, WASD, or click/touch the side of the board."]]
+    [board @model/app-state]
+    [:p "Multiplayer - invite your friends. Steer with the arrow keys, WASD, or click/touch the side of the board."]]
    [:h1
     [:button
      {:on-click

@@ -1,14 +1,22 @@
-body {
+body,button {
   background-color: #7CAFC2;
+  font-family: courier;
 }
 
 .board {
-  background-color: white;
+  cursor: pointer;
+  width: 90%;
+  height: 60vh;
 }
 
 h1 {
   color: #F8F8F8;
   background-color: #A1B56C;
   text-align: center;
-  font-family: courier;
+}
+
+button {
+  font-size: 100%;
+  background-color: #A16946;
+  color: #F8F8F8;
 }
