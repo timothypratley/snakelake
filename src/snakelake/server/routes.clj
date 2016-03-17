@@ -62,7 +62,7 @@
 
 (defn ticker []
   (while true
-    (Thread/sleep 200)
+    (Thread/sleep 30)
     (try
       (model/tick)
       (broadcast)

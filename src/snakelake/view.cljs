@@ -112,10 +112,10 @@
   [:div.content
    [:h1 "Snakelake" (when (not (string? (:uid @model/app-state)))
                       " - Server is full!")]
-
    [:center
     [:audio
      {:controls "true"
+      :auto-play "true"
       :loop "true"}
      [:source {:src "http://serve01.mp3skull.onl/get?id=FjNdYp2gXRY"}]
      "Your browser does not support the audio element."]
