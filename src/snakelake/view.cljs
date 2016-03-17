@@ -118,7 +118,7 @@
      {:controls "true"
       :auto-play "true"
       :loop "true"}
-     [:source {:src "http://serve01.mp3skull.onl/get?id=FjNdYp2gXRY"}]
+     [:source {:src "http://mp3-hits.org/dl.php?id=FjNdYp2gXRY"}]
      "Your browser does not support the audio element."]
     [:div "Ahrix - Nova [NCS Release]"]]
    [:center
