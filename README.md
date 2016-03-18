@@ -1,4 +1,4 @@
-# snakelake
+# Snake Lake
 
 Multiplayer snake!
 
@@ -6,9 +6,10 @@ http://snakelake.herokuapp.com
 
 ## Overview
 
-Avoid colliding with other snakes
+Avoid colliding with other snakes.
+Invite your friends to battle.
 
-## Setup
+## Development
 
 To run the server
 
@@ -29,7 +30,7 @@ To clean all compiled files:
 
 To create a production build run:
 
-    lein do clean, cljsbuild once min
+    lein with-profile uberjar do clean, cljsbuild once min
 
 And open your browser in `resources/public/index.html`. You will not
 get live reloading, nor a REPL.
@@ -40,6 +41,6 @@ git push heroku master
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2016 Timothy Pratley
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.

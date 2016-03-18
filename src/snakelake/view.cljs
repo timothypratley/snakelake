@@ -202,4 +202,7 @@
     [respawn-form]
     [scores @model/app-state]
     [board @model/app-state]
-    [:p "Multiplayer - invite your friends. Steer with the arrow keys, WASD, or click/touch the side of the board."]]])
+    [:p "Multiplayer - invite your friends. Steer with the arrow keys, WASD, or click/touch the side of the board."]
+    [:p [:a {:href "https://github.com/timothypratley/snakelake"
+             :target "_blank"}
+         "Source code"]]]])
