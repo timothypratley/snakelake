@@ -2,7 +2,7 @@
 
 Multiplayer snake!
 
-http://snakelake.herokuapp.com
+http://timothypratley.github.io/snakelake
 
 ## Overview
 
