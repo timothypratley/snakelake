@@ -37,7 +37,13 @@ get live reloading, nor a REPL.
 
 ## Deploy
 
-git push heroku master
+To deploy the server:
+
+    git push heroku master
+
+To deploy the static assets:
+
+    ./deploy.sh
 
 ## License
 
