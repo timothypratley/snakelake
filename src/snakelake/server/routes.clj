@@ -42,6 +42,12 @@
   (let [[dx dy] ?data]
     (model/dir uid dx dy)))
 
+(defmethod event :snakelake/username [{:as ev-msg :keys [event uid ?data]}]
+  (model/username uid ?data))
+
+(defmethod event :snakelake/respawn [{:as ev-msg :keys [event uid ?data]}]
+  (model/enter-game uid))
+
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
   (println "New connection:" uid client-id)
   (model/enter-game uid))

@@ -1,6 +1,11 @@
-body,button {
+body {
   background-color: #7CAFC2;
   font-family: courier;
+}
+
+button, input {
+  font-family: courier;
+  text-align: center;
 }
 
 .board {
@@ -19,4 +24,10 @@ button {
   font-size: 100%;
   background-color: #A16946;
   color: #F8F8F8;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px #888888;
+}
+
+.number {
+  text-align: right;
 }

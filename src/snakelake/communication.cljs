@@ -26,13 +26,17 @@
 (defmethod event-msg-handler :chsk/recv [{:as ev-msg :keys [?data]}]
   (model/world! (second ?data)))
 
+(defn send-username []
+  (chsk-send! [:snakelake/username (:username @model/app-state)]))
+
 (defmethod event-msg-handler :chsk/handshake [{:as ev-msg :keys [?data]}]
   (let [[?uid ?csrf-token ?handshake-data] ?data]
     (println "Handshake:" ?data)
-    (model/uid! ?uid)))
+    (model/uid! ?uid)
+    (send-username)))
 
 (defonce router
   (sente/start-client-chsk-router! ch-chsk event-msg-handler))
 
-(defn reconnect []
-  (sente/chsk-reconnect! chsk))
+(defn respawn []
+  (chsk-send! [:snakelake/respawn]))

@@ -63,22 +63,34 @@
       world)
     world))
 
-(defn new-player [world uid]
+(defn clear-board [board uid]
+  (mapv
+    (fn [row]
+      (mapv
+        (fn [cell]
+          (when (not= cell uid)
+            cell))
+        row))
+    board))
+
+(defn new-player [world uid username]
   (let [health :alive
         [x y dx dy] (find-start world)
         length 3
         path [[x y]]]
     (if x
       (-> world
-        (assoc-in [:players uid] [health x y dx dy length path])
+        (assoc-in [:players uid] [health x y dx dy length path username])
+        (update :board clear-board uid)
         (assoc-in [:board y x] uid)
         (with-new-food))
-      (do
-        (println "No space for new player")
-        world))))
+      world)))
 
 (defn enter-game [uid]
-  (dosync (alter world new-player uid)))
+  (dosync (alter world new-player uid
+                 (if-let [[health x y dx dy length path username] (get-in @world [:players uid])]
+                   username
+                   "Unknown"))))
 
 (defn trim-tail [world [uid [health x y dx dy length path]]]
   (let [length (cond-> length (and (pos? length) (not= health :alive)) dec)]
@@ -152,6 +164,9 @@
 
 (defn dir [uid dx dy]
   (dosync (alter world with-dir uid dx dy)))
+
+(defn username [uid username]
+    (dosync (alter world assoc-in [:players uid 7] username)))
 
 (defn board-without-player [board uid]
   (mapv (fn [v]
