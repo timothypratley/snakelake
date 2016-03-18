@@ -1,0 +1,33 @@
+body {
+  background-color: #7CAFC2;
+  font-family: courier;
+}
+
+button, input {
+  font-family: courier;
+  text-align: center;
+}
+
+.board {
+  cursor: pointer;
+  width: 90%;
+  height: 60vh;
+}
+
+h1 {
+  color: #F8F8F8;
+  background-color: #A1B56C;
+  text-align: center;
+}
+
+button {
+  font-size: 100%;
+  background-color: #A16946;
+  color: #F8F8F8;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px #888888;
+}
+
+.number {
+  text-align: right;
+}
