@@ -1,10 +1,20 @@
 (ns snakelake.communication
   (:require
     [snakelake.ainit]
-    [taoensso.sente :as sente]
-    [snakelake.model :as model]))
+    [snakelake.model :as model]
+    [snakelake.config :as config]
+    [taoensso.sente :as sente]))
 
-(defonce channel-socket (sente/make-channel-socket! "/chsk" {:type :auto}))
+(defn get-chsk-url
+  "Connect to a configured server instead of the page host"
+  [protocol chsk-host chsk-path type]
+  (let [protocol (case type :ajax protocol
+                            :ws   (if (= protocol "https:") "wss:" "ws:"))]
+    (str protocol "//" config/server chsk-path)))
+
+(defonce channel-socket
+  (with-redefs [sente/get-chsk-url get-chsk-url]
+    (sente/make-channel-socket! "/chsk" {:type :auto})))
 (defonce chsk (:chsk channel-socket))
 (defonce ch-chsk (:ch-recv channel-socket))
 (defonce chsk-send! (:send-fn channel-socket))

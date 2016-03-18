@@ -15,8 +15,7 @@
                  [http-kit "2.1.19"]
                  [compojure "1.5.0"]
                  [ring "1.4.0"]
-                 [ring/ring-defaults "0.2.0"]
-                 [ring-cors "0.1.7"]]
+                 [ring/ring-defaults "0.2.0"]]
 
   :plugins [[lein-figwheel "0.5.0-6"]
             [lein-cljsbuild "1.1.3" :exclusions [[org.clojure/clojure]]]
@@ -34,7 +33,7 @@
   {:dev {:env {:dev? "true"}
          :cljsbuild {:builds
                      [{:id "dev"
-                       :source-paths ["src"]
+                       :source-paths ["src" "dev"]
                        :figwheel {}
                        :compiler {:main snakelake.main
                                   :asset-path "js/compiled/out"
@@ -45,7 +44,7 @@
              :aot :all
              :cljsbuild {:builds
                          [{:id "min"
-                           :source-paths ["src"]
+                           :source-paths ["src" "prod"]
                            :compiler {:main snakelake.main
                                       :output-to "resources/public/js/compiled/snakelake.js"
                                       :optimizations :advanced
