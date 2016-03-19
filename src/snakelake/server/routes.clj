@@ -31,7 +31,7 @@
 
 (def handler
   (-> #'routes
-    (cors/wrap-cors :access-control-allow-origin [#"*."]
+    (cors/wrap-cors :access-control-allow-origin [#".*"]
                     :access-control-allow-methods [:get :put :post :delete])
     (defaults/wrap-defaults (assoc-in defaults/site-defaults [:security :anti-forgery] false))
     (cond-> (environ/env :dev?) (reload/wrap-reload))))
