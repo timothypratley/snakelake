@@ -31,11 +31,11 @@
 
 (def handler
   (-> #'routes
+    (cond-> (environ/env :dev?) (reload/wrap-reload))
     (defaults/wrap-defaults (assoc-in defaults/site-defaults [:security :anti-forgery] false))
     (cors/wrap-cors :access-control-allow-origin [#".*"]
                     :access-control-allow-methods [:get :put :post :delete]
-                    :access-control-allow-credentials ["true"])
-    (cond-> (environ/env :dev?) (reload/wrap-reload))))
+                    :access-control-allow-credentials ["true"])))
 
 (defmulti event :id)
 
