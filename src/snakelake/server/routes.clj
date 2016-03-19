@@ -3,6 +3,7 @@
     [snakelake.server.model :as model]
     [ring.middleware.defaults :as defaults]
     [ring.middleware.reload :as reload]
+    [ring.middleware.cors :as cors]
     [ring.util.response :as response]
     [environ.core :as environ]
     [taoensso.sente :as sente]
@@ -23,14 +24,16 @@
                  (response/resource-response "public/index.html")
                  "text/html"))
   (GET "/status" req (str "Running: " (pr-str @(:connected-uids channel-socket))))
-  (GET  "/chsk" req ((:ajax-get-or-ws-handshake-fn channel-socket) req))
+  (GET "/chsk" req ((:ajax-get-or-ws-handshake-fn channel-socket) req))
   (POST "/chsk" req ((:ajax-post-fn channel-socket) req))
   (route/resources "/")
   (route/not-found "Nnt found"))
 
 (def handler
   (-> #'routes
-    (defaults/wrap-defaults defaults/site-defaults)
+    (cors/wrap-cors :access-control-allow-origin [#"*."]
+                    :access-control-allow-methods [:get :put :post :delete])
+    (defaults/wrap-defaults (assoc-in defaults/site-defaults [:security :anti-forgery] false))
     (cond-> (environ/env :dev?) (reload/wrap-reload))))
 
 (defmulti event :id)

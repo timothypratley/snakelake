@@ -7,7 +7,7 @@
    "Sentimental" "Super" "Sad" "Silly" "Scary" "Scheming" "Smart" "Smelly"
    "Snake" "Serpent" "Worm" "Viper" "Bite" "Coil" "Lake" "Coder"
    "Ninja" "Monk" "Pirate" "Guard" "Warrior" "Dancer" "Acrobat" "Mongoose"
-   "Sente"])
+   "Sente" "Dragon" "Clojure" "Nomnom"])
 
 (defonce app-state
   (reagent/atom

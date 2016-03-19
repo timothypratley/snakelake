@@ -1,5 +1,6 @@
 (ns snakelake.server.model
   (:require
+    [clojure.core.memoize :as memo]
     [clojure.set :as set]))
 
 (def width 50)
@@ -25,10 +26,17 @@
              :when (not= c1 c2)]
          (str c1 c2))))
 
-;; TODO: what to do when more than 16 players?
-(defn next-uid [req]
+(defn next-color []
   (let [available (set/difference colors2 (set (keys (:players @world))))]
     (some-> (seq available) (rand-nth))))
+
+(defn client-uid* [client-id]
+  (next-color))
+
+(def client-uid (memo/ttl client-uid* :ttl/threshold (* 60 60 1000)))
+
+(defn next-uid [{:keys [params]}]
+  (client-uid (:client-id params)))
 
 (defn clear? [board x y]
   (every? #(or (nil? %) (= "food" %))
