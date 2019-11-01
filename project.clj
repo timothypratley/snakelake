@@ -6,21 +6,21 @@
 
   :min-lein-version "2.5.3"
   
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.8.34"]
-                 [org.clojure/core.async "0.2.374"]
+  :dependencies [[org.clojure/clojure "1.10.0"]
+                 [org.clojure/clojurescript "1.10.520"]
+                 [org.clojure/core.async "0.4.500"]
                  [org.clojure/core.memoize "0.5.8"]
                  [reagent "0.5.1"]
                  [com.taoensso/sente "1.8.1"]
                  [environ "1.0.2"]
-                 [http-kit "2.1.19"]
-                 [compojure "1.5.0"]
+                 [http-kit "2.3.0"]
+                 [compojure "1.6.1"]
                  [ring "1.4.0"]
-                 [ring/ring-defaults "0.2.0"]
+                 [ring/ring-defaults "0.3.2"]
                  [ring-cors "0.1.7"]]
 
-  :plugins [[lein-figwheel "0.5.0-6"]
-            [lein-cljsbuild "1.1.3"]
+  :plugins [[lein-figwheel "0.5.19"]
+            [lein-cljsbuild "1.1.7"]
             [lein-environ "1.0.2"]]
 
   :source-paths ["src"]
